@@ -2,9 +2,9 @@ const video = document.getElementById("video");
 const glasses = loadGlasses();
 
 Promise.all([
-  faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
-  faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
-  faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+  faceapi.nets.tinyFaceDetector.loadFromUri("https://raw.githubusercontent.com/ewajs/faceapi-demo/master/models"),
+  faceapi.nets.faceLandmark68Net.loadFromUri("https://raw.githubusercontent.com/ewajs/faceapi-demo/master/models"),
+  faceapi.nets.faceRecognitionNet.loadFromUri("https://raw.githubusercontent.com/ewajs/faceapi-demo/master/models"),
 ]).then(startVideo);
 
 function startVideo() {
