@@ -2,9 +2,15 @@ const video = document.getElementById("video");
 const glasses = loadGlasses();
 
 Promise.all([
-  faceapi.nets.tinyFaceDetector.loadFromUri("https://raw.githubusercontent.com/ewajs/faceapi-demo/master/models"),
-  faceapi.nets.faceLandmark68Net.loadFromUri("https://raw.githubusercontent.com/ewajs/faceapi-demo/master/models"),
-  faceapi.nets.faceRecognitionNet.loadFromUri("https://raw.githubusercontent.com/ewajs/faceapi-demo/master/models"),
+  faceapi.nets.tinyFaceDetector.loadFromUri(
+    "https://raw.githubusercontent.com/ewajs/faceapi-demo/master/models"
+  ),
+  faceapi.nets.faceLandmark68Net.loadFromUri(
+    "https://raw.githubusercontent.com/ewajs/faceapi-demo/master/models"
+  ),
+  faceapi.nets.faceRecognitionNet.loadFromUri(
+    "https://raw.githubusercontent.com/ewajs/faceapi-demo/master/models"
+  ),
 ]).then(startVideo);
 
 function startVideo() {
@@ -31,16 +37,16 @@ video.addEventListener("play", () => {
 
 function loadGlasses() {
   const i = new Image();
-  i.src = "glasses.png";
+  i.src =
+    "https://raw.githubusercontent.com/ewajs/faceapi-demo/master/glasses.png";
   return i;
 }
 
 function drawGlasses(resizedDetections, canvas) {
   const ctx = canvas.getContext("2d");
+  const landmarks = resizedDetections[0].landmarks;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const eyes = resizedDetections[0].landmarks
-    .getLeftEye()
-    .concat(resizedDetections[0].landmarks.getRightEye());
+  const eyes = landmarks.getLeftEye().concat(landmarks.getRightEye());
   let y = 0,
     x = 0;
   eyes.forEach((eye) => {
@@ -49,9 +55,16 @@ function drawGlasses(resizedDetections, canvas) {
   });
   x = x / eyes.length;
   y = y / eyes.length;
-  console.log("Drawing Circle at x: ", x, ", y: ", y);
-  ctx.beginPath();
-  ctx.arc(x, y, 20, 0, 2 * Math.PI);
-  ctx.stroke();
-  ctx.fill();
+  console.log("Inferred Center @ x: ", x, ", y: ", y);
+  const scale = landmarks.imageWidth / glasses.width;
+  const x_image = x - (scale * glasses.width) / 2;
+  const y_image = y - scale * glasses.height * 0.45;
+  ctx.drawImage(
+    glasses,
+    x_image,
+    y_image,
+    scale * glasses.width,
+    scale * glasses.height
+  );
+  console.log(resizedDetections[0].landmarks);
 }
